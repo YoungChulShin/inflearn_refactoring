@@ -23,6 +23,7 @@ public class StudyDashboard {
     }
 
     private void print() throws IOException, InterruptedException {
+
         GitHub gitHub = GitHub.connect();
         GHRepository repository = gitHub.getRepository("whiteship/live-study");
         List<Participant> participants = new CopyOnWriteArrayList<>();
@@ -72,15 +73,27 @@ public class StudyDashboard {
             writer.print(header(totalNumberOfEvents, participants.size()));
 
             participants.forEach(p -> {
-                long count = p.homework().values().stream()
-                        .filter(v -> v == true)
-                        .count();
-                double rate = count * 100 / totalNumberOfEvents;
-
-                String markdownForHomework = String.format("| %s %s | %.2f%% |\n", p.username(), checkMark(p, totalNumberOfEvents), rate);
+                double rate = getRate(totalNumberOfEvents, p);
+                String markdownForHomework = getMarkdownForParticipant(totalNumberOfEvents, p, rate);
                 writer.print(markdownForHomework);
             });
         }
+    }
+
+    private double getRate(int totalNumberOfEvents, Participant p) {
+        long count = p.homework().values().stream()
+                .filter(v -> v == true)
+                .count();
+        return count * 100 / totalNumberOfEvents;
+    }
+
+    // 기존에 Rate가 파리미터로 있었다면, 이 값을 메서드로 빼면서
+    // 메서드를 내부에서 호출하는 식으로 변경해서 파라미터 수를 줄일 수 있다
+    private String getMarkdownForParticipant(int totalNumberOfEvents, Participant p) {
+        double rate = getRate(totalNumberOfEvents, p);
+
+        return String.format("| %s %s | %.2f%% |\n", p.username(),
+            checkMark(p, totalNumberOfEvents), rate);
     }
 
     /**
