@@ -73,8 +73,7 @@ public class StudyDashboard {
             writer.print(header(totalNumberOfEvents, participants.size()));
 
             participants.forEach(p -> {
-                double rate = getRate(totalNumberOfEvents, p);
-                String markdownForHomework = getMarkdownForParticipant(totalNumberOfEvents, p, rate);
+                String markdownForHomework = getMarkdownForParticipant(totalNumberOfEvents, p);
                 writer.print(markdownForHomework);
             });
         }
