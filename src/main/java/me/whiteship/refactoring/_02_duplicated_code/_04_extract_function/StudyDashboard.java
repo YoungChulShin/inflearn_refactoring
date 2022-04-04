@@ -11,31 +11,31 @@ import java.util.Set;
 public class StudyDashboard {
 
     private void printParticipants(int eventId) throws IOException {
-        // Get github issue to check homework
-        GitHub gitHub = GitHub.connect();
-        GHRepository repository = gitHub.getRepository("whiteship/live-study");
-        GHIssue issue = repository.getIssue(eventId);
-
-        // Get participants
-        Set<String> participants = new HashSet<>();
-        issue.getComments().forEach(c -> participants.add(c.getUserName()));
-
-        // Print participants
-        participants.forEach(System.out::println);
+        GHIssue issue = getGhIssue(eventId);
+        Set<String> participants = getUserNames(issue);
+        print(participants);
     }
 
     private void printReviewers() throws IOException {
-        // Get github issue to check reviews
+        GHIssue issue = getGhIssue(30);
+        Set<String> reviewers = getUserNames(issue);
+        print(reviewers);
+    }
+
+    private GHIssue getGhIssue(int eventId) throws IOException {
         GitHub gitHub = GitHub.connect();
         GHRepository repository = gitHub.getRepository("whiteship/live-study");
-        GHIssue issue = repository.getIssue(30);
+        return repository.getIssue(eventId);
+    }
 
-        // Get reviewers
-        Set<String> reviewers = new HashSet<>();
-        issue.getComments().forEach(c -> reviewers.add(c.getUserName()));
+    private Set<String> getUserNames(GHIssue issue) throws IOException {
+        Set<String> userNames = new HashSet<>();
+        issue.getComments().forEach(c -> userNames.add(c.getUserName()));
+        return userNames;
+    }
 
-        // Print reviewers
-        reviewers.forEach(System.out::println);
+    private void print(Set<String> participants) {
+        participants.forEach(System.out::println);
     }
 
     public static void main(String[] args) throws IOException {
@@ -43,5 +43,4 @@ public class StudyDashboard {
         studyDashboard.printReviewers();
         studyDashboard.printParticipants(15);
     }
-
 }
