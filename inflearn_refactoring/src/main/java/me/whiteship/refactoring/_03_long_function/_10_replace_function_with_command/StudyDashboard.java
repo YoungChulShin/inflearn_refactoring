@@ -28,15 +28,37 @@ public class StudyDashboard {
         studyDashboard.print();
     }
 
+    // 메서드로 기존에 복잡했던 if/else 로직을 의미를 잘 전달할 수 있도록 수정
     private Participant findParticipant(String username, List<Participant> participants) {
-        Participant participant = null;
-        if (participants.stream().noneMatch(p -> p.username().equals(username))) {
-            participant = new Participant(username);
-            participants.add(participant);
-        } else {
-            participant = participants.stream().filter(p -> p.username().equals(username)).findFirst().orElseThrow();
-        }
+//        Participant participant = null;
+//        if (isNewParticipant(username, participants)) {
+//            participant = createNewParticipant(username, participants);
+//        } else {
+//            participant = findExistingParticipant(username, participants);
+//        }
+//        return participant;
+
+        // 메서드로 분리하고 나니 3항 연산자로 추가로 수정할 수 있는 것이 보인다
+        return isNewParticipant(username, participants)
+            ? createNewParticipant(username, participants)
+            : findExistingParticipant(username, participants);
+    }
+
+    private Participant findExistingParticipant(String username, List<Participant> participants) {
+        Participant participant;
+        participant = participants.stream().filter(p -> p.username().equals(username)).findFirst().orElseThrow();
         return participant;
+    }
+
+    private Participant createNewParticipant(String username, List<Participant> participants) {
+        Participant participant;
+        participant = new Participant(username);
+        participants.add(participant);
+        return participant;
+    }
+
+    private boolean isNewParticipant(String username, List<Participant> participants) {
+        return participants.stream().noneMatch(p -> p.username().equals(username));
     }
 
     private void print() throws IOException, InterruptedException {
