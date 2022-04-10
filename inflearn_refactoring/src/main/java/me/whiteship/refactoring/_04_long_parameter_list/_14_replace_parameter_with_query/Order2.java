@@ -1,12 +1,12 @@
 package me.whiteship.refactoring._04_long_parameter_list._14_replace_parameter_with_query;
 
-public class Order {
+public class Order2 {
 
     private int quantity;
 
     private double itemPrice;
 
-    public Order(int quantity, double itemPrice) {
+    public Order2(int quantity, double itemPrice) {
         this.quantity = quantity;
         this.itemPrice = itemPrice;
     }
@@ -21,6 +21,6 @@ public class Order {
     }
 
     private double discountedPrice(double basePrice) {
-        return discountLevel() == 2 ? basePrice * 0.90 : basePrice * 0.95;
+        return discountLevel() == 2 ? basePrice * 0.9 : basePrice * 0.95;
     }
 }
