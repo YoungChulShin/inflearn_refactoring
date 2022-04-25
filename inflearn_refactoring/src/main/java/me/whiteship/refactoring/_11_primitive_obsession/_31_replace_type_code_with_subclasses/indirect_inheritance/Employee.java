@@ -1,35 +1,34 @@
 package me.whiteship.refactoring._11_primitive_obsession._31_replace_type_code_with_subclasses.indirect_inheritance;
 
-import java.util.List;
-
 public class Employee {
 
-    private String name;
+    private final String name;
 
-    private String type;
+    private final EmployeeType type;
 
-    public Employee(String name, String type) {
-        this.validate(type);
+    protected Employee(String name, String typeValue) {
         this.name = name;
-        this.type = type;
+        this.type = employeeType(typeValue);
     }
 
-    private void validate(String type) {
-        List<String> legalTypes = List.of("engineer", "manager", "salesman");
-        if (!legalTypes.contains(type)) {
-            throw new IllegalArgumentException(type);
-        }
+    private EmployeeType employeeType(String typeValue) {
+        return switch (typeValue) {
+            case "engineer" -> new EngineerType();
+            case "manager" -> new ManagerType();
+            case "salesman" -> new SalesmanType();
+            default -> throw new IllegalArgumentException(typeValue);
+        };
     }
 
     public String capitalizedType() {
-        return this.type.substring(0, 1).toUpperCase() + this.type.substring(1).toLowerCase();
+        return this.type.capitalize();
     }
 
     @Override
     public String toString() {
         return "Employee{" +
                 "name='" + name + '\'' +
-                ", type='" + type + '\'' +
+                ", type='" + type.toString() + '\'' +
                 '}';
     }
 }
